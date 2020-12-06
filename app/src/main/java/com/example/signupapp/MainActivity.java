@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progress_bar_login);
         mAuth = FirebaseAuth.getInstance();
 
+        progressBar.setVisibility(View.INVISIBLE);
+
         signUpTextLinear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -63,11 +65,15 @@ public class MainActivity extends AppCompatActivity {
         String email = logInPassword.getText().toString().trim();
         String password = logInPassword.getText().toString().trim();
 
+        progressBar.setVisibility(View.VISIBLE);
+
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()) {
-
+                    progressBar.setVisibility(View.GONE);
+                    Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 }
             }
         });
