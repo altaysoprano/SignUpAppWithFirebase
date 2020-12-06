@@ -1,5 +1,6 @@
 package com.example.signupapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -13,10 +14,20 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 
     LinearLayout signUpTextLinear;
+    Button loginButton;
+    FirebaseAuth mAuth;
+    EditText logInEmail, logInPassword;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +35,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         signUpTextLinear = findViewById(R.id.sign_up_text_linear);
+        loginButton = findViewById(R.id.login_button);
+        logInEmail = findViewById(R.id.login_email);
+        logInPassword = findViewById(R.id.login_password);
+        progressBar = findViewById(R.id.progress_bar_login);
+        mAuth = FirebaseAuth.getInstance();
 
         signUpTextLinear.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -33,6 +49,28 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                logIn();
+            }
+        });
+
+    }
+
+    private void logIn() {
+
+        String email = logInPassword.getText().toString().trim();
+        String password = logInPassword.getText().toString().trim();
+
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()) {
+
+                }
+            }
+        });
     }
 
     @Override

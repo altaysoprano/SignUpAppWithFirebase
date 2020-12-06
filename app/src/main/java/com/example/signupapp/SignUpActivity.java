@@ -16,19 +16,22 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 public class SignUpActivity extends AppCompatActivity {
 
     LinearLayout loginTextLinear;
-    EditText editTextEmail, editTextPassword, editTextPasswordAgain;
+    EditText signUpEmail, signUpPassword, signUpPasswordAgain;
     private FirebaseAuth mAuth;
     Button signUpButton;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,11 +39,14 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
 
         loginTextLinear = findViewById(R.id.login_text_linear);
-        editTextEmail = findViewById(R.id.sign_up_email);
-        editTextPassword = findViewById(R.id.sign_up_password);
-        editTextPasswordAgain = findViewById(R.id.sign_up_password_again);
+        signUpEmail = findViewById(R.id.sign_up_email);
+        signUpPassword = findViewById(R.id.sign_up_password);
+        signUpPasswordAgain = findViewById(R.id.sign_up_password_again);
         signUpButton = findViewById(R.id.sign_up_button);
+        progressBar = findViewById(R.id.progress_bar_signup);
         mAuth = FirebaseAuth.getInstance();
+
+        progressBar.setVisibility(View.GONE);
 
         loginTextLinear.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,48 +68,58 @@ public class SignUpActivity extends AppCompatActivity {
 
 
     private void register() {
-        String email = editTextEmail.getText().toString().trim();
-        String password = editTextPassword.getText().toString().trim();
-        String passwordAgain = editTextPasswordAgain.getText().toString().trim();
+        String email = signUpEmail.getText().toString().trim();
+        String password = signUpPassword.getText().toString().trim();
+        String passwordAgain = signUpPasswordAgain.getText().toString().trim();
 
         if(email.isEmpty()) {
-            editTextEmail.setError("E-posta alanını boş geçemezsiniz");
-            editTextEmail.requestFocus();
+            signUpEmail.setError("E-posta alanını boş geçemezsiniz");
+            signUpEmail.requestFocus();
             return;
         }
 
         if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            editTextEmail.setError("Geçersiz bir e-posta adresi girdiniz");
-            editTextEmail.requestFocus();
+            signUpEmail.setError("Geçersiz bir e-posta adresi girdiniz");
+            signUpEmail.requestFocus();
             return;
         }
 
         if(password.isEmpty()) {
-            editTextPassword.setError("Şifre alanını boş geçemezsiniz");
-            editTextPassword.requestFocus();
+            signUpPassword.setError("Şifre alanını boş geçemezsiniz");
+            signUpPassword.requestFocus();
             return;
         }
 
         if(password.length()<6) {
-            editTextPassword.setError("Şifreniz minimum 6 karakterden oluşmalı");
-            editTextPassword.requestFocus();
+            signUpPassword.setError("Şifreniz minimum 6 karakterden oluşmalı");
+            signUpPassword.requestFocus();
             return;
         }
 
         if(!password.equals(passwordAgain)) {
-            editTextPasswordAgain.setError("Şifreleriniz birbiriyle eşleşmiyor");
-            editTextPasswordAgain.requestFocus();
+            signUpPasswordAgain.setError("Şifreleriniz birbiriyle eşleşmiyor");
+            signUpPasswordAgain.requestFocus();
             return;
         }
+        signUpButton.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
 
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
+                progressBar.setVisibility(View.GONE);
+                signUpButton.setVisibility(View.VISIBLE);
+
                 if(task.isSuccessful()) {
-                    Toast.makeText(SignUpActivity.this, "Kaydınız başarıyla gerçekleştirildi", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Kaydınız başarıyla gerçekleştirildi", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+                    startActivity(intent);
+                }
+                else if(task.getException() instanceof FirebaseAuthUserCollisionException){
+                    Toast.makeText(SignUpActivity.this, "Zaten kayıtlı kullanıcımızsınız!", Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    Toast.makeText(SignUpActivity.this, "Kaydınız gerçekleştirilemedi", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignUpActivity.this, "Hata! Kaydınız gerçekleştirilemedi.", Toast.LENGTH_SHORT).show();
                 }
             }
         });

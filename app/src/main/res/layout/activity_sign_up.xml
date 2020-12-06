@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SignUpActivity"
-    android:background="@drawable/activity_background_1">
+    android:background="@drawable/activity_background_1"
+    tools:context=".SignUpActivity">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -25,10 +25,10 @@
             android:layout_marginEnd="30dp"
             android:background="@drawable/custom_input"
             android:drawableStart="@drawable/custom_email_icon"
-            android:inputType="textEmailAddress"
             android:drawablePadding="15dp"
             android:hint="E-posta"
             android:importantForAutofill="no"
+            android:inputType="textEmailAddress"
             android:padding="12dp"
             android:textColorHint="#B7B7B7"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -87,20 +87,30 @@
             android:textColor="@android:color/white"
             android:textSize="16dp" />
 
+        <ProgressBar
+            android:id="@+id/progress_bar_signup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="40dp"
+            >
+
+        </ProgressBar>
+
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        app:layout_constraintVertical_bias="0.06"
-        android:gravity="center"
-        >
+        app:layout_constraintVertical_bias="0.06">
 
         <TextView
             android:layout_width="wrap_content"
@@ -108,27 +118,25 @@
             android:text="Zaten bir hesabın var mı?"
             android:textAlignment="center"
             android:textColor="@android:color/black"
-            android:textSize="16dp"
-            ></TextView>
+            android:textSize="16dp"></TextView>
 
         <LinearLayout
             android:id="@+id/login_text_linear"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            >
+            android:gravity="center">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:letterSpacing="-0.04"
                 android:text="Giriş Yap"
                 android:textColor="#004154"
-                android:layout_marginStart="5dp"
-                android:textStyle="bold"
-                android:letterSpacing="-0.04"
-                android:textSize="17dp" ></TextView>
+                android:textSize="17dp"
+                android:textStyle="bold"></TextView>
         </LinearLayout>
 
     </LinearLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
