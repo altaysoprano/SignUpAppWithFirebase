@@ -15,11 +15,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progress_bar_login);
         mAuth = FirebaseAuth.getInstance();
 
-        progressBar.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.GONE);
 
         signUpTextLinear.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,18 +64,39 @@ public class MainActivity extends AppCompatActivity {
 
     private void logIn() {
 
-        String email = logInPassword.getText().toString().trim();
+        String email = logInEmail.getText().toString().trim();
         String password = logInPassword.getText().toString().trim();
 
+        if(email.isEmpty()) {
+            logInEmail.setError("E-posta alanını boş geçemezsiniz");
+            logInEmail.requestFocus();
+            return;
+        }
+
+        if(password.isEmpty()) {
+            logInPassword.setError("Şifre alanını boş geçemezsiniz");
+            logInPassword.requestFocus();
+            return;
+        }
+
         progressBar.setVisibility(View.VISIBLE);
+        loginButton.setVisibility(View.GONE);
 
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
+                progressBar.setVisibility(View.GONE);
+                loginButton.setVisibility(View.VISIBLE);
+
                 if(task.isSuccessful()) {
-                    progressBar.setVisibility(View.GONE);
                     Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                }
+                else {
+                    Toast.makeText(MainActivity.this, "Hata! Giriş yapılamadı", Toast.LENGTH_SHORT).show();
                 }
             }
         });

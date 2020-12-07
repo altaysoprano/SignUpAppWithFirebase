@@ -112,7 +112,8 @@ public class SignUpActivity extends AppCompatActivity {
 
                 if(task.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), "Kaydınız başarıyla gerçekleştirildi", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+                    Intent intent = new Intent(SignUpActivity.this, ProfileActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                 }
                 else if(task.getException() instanceof FirebaseAuthUserCollisionException){
